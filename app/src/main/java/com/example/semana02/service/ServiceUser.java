@@ -1,6 +1,6 @@
 package com.example.semana02.service;
 
-import com.example.semana02.entity.User;
+import com.example.semana02.entity.Product;
 
 import java.util.List;
 
@@ -9,7 +9,8 @@ import retrofit2.http.GET;
 
 public interface ServiceUser {
 
-    @GET("users")
-    public abstract Call<List<User>> listausuarios();
+    @GET("products")
+    public abstract Call<List<Product>> listaProductos();
+
 
 }

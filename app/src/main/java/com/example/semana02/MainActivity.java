@@ -1,12 +1,11 @@
 package com.example.semana02;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.GridView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.semana02.adapter.UserAdapter;
-import com.example.semana02.entity.User;
+import com.example.semana02.entity.Product;
 import com.example.semana02.service.ServiceUser;
 import com.example.semana02.util.ConnectionRest;
 
@@ -29,8 +28,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     //ListView y Adapater
-    ListView lstUser;
-    ArrayList<User> listaUser = new ArrayList<User>();
+    GridView lstUser;
+    ArrayList<Product> listaUser = new ArrayList<Product>();
     UserAdapter userAdapter;
 
     Button   btnFiltrar;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     //conecta al servicio REST
     ServiceUser serviceUser;
 
-    private List<User> listaTotalUsuarios;
+    private List<Product> listaTotalUsuarios;
 
 
     @Override
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         lstUser = findViewById(R.id.lstUsuarios);
-        userAdapter = new UserAdapter(this, R.layout.user_item, listaUser);
+        userAdapter = new UserAdapter(this, R.layout.product_item, listaUser);
         lstUser.setAdapter(userAdapter);
 
 
@@ -71,13 +70,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        lstUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Product obj =  listaUser.get(position);
+                Intent intent = new Intent(MainActivity.this, MainViewDetail.class);
+                intent.putExtra("var_product", obj);
+                startActivity(intent);
+
+
+            }
+        });
+
     }
 
     void cargaUsuarios(){
-        Call<List<User>> call = serviceUser.listausuarios();
-        call.enqueue(new Callback<List<User>>() {
+        Call<List<Product>> call = serviceUser.listaProductos();
+        call.enqueue(new Callback<List<Product>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                    if (response.isSuccessful()){
                        listaTotalUsuarios = response.body();
                        listaUser.clear();
@@ -86,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                    }
             }
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
 
             }
         });
